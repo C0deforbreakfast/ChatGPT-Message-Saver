@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>ChatGPT bookmarks</title>
+  <style>
+    :root {
+      --row-h: 64px;
+      --radius: 10px;
+      --shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    /* Dark theme (default) */
+    [data-theme="dark"] {
+      --bg: #0f172a;
+      --panel: #111827;
+      --panel-alt: #0b1220;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --accent: #60a5fa;
+      --accent-2: #34d399;
+      --danger: #f87171;
+      --border: #1f2937;
+      --hover: #1f2937;
+      --btn-bg: #0b1220;
+      --btn-bg-hover: #0e1626;
+      --btn-border-hover: #2a3547;
+      --toast-bg: rgba(17,24,39,0.95);
+    }
+
+    /* Light theme */
+    [data-theme="light"] {
+      --bg: #f5f7fb;
+      --panel: #ffffff;
+      --panel-alt: #eef2f7;
+      --text: #0b1220;
+      --muted: #5b6472;
+      --accent: #2563eb;
+      --accent-2: #059669;
+      --danger: #dc2626;
+      --border: #e5e7eb;
+      --hover: #f3f4f6;
+      --btn-bg: #f8fafc;
+      --btn-bg-hover: #eef2f7;
+      --btn-border-hover: #cbd5e1;
+      --toast-bg: rgba(255,255,255,0.95);
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, sans-serif;
+      font-size: 13px;
+      color: var(--text);
+      background: linear-gradient(180deg, var(--panel-alt), var(--bg));
+      min-width: 340px;
+      max-width: 480px;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+    header h1 {
+      font-size: 13px;
+      font-weight: 600;
+      margin: 0;
+      letter-spacing: 0.2px;
+    }
+    .header-actions { display: flex; gap: 6px; }
+    .theme-btn {
+      appearance: none;
+      border: 1px solid var(--border);
+      background: var(--btn-bg);
+      color: var(--text);
+      border-radius: var(--radius);
+      padding: 6px 8px;
+      cursor: pointer;
+      transition: transform 0.06s ease, background 0.2s ease, border-color 0.2s ease;
+    }
+    .theme-btn:hover { background: var(--btn-bg-hover); border-color: var(--btn-border-hover); }
+    .theme-btn:active { transform: translateY(1px); }
+    .container {
+      padding: 10px 10px 12px;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      /* Show about 10 rows before scroll */
+      max-height: calc(var(--row-h) * 10 + 9px * 8);
+      overflow-y: auto;
+    }
+    li {
+      margin-bottom: 8px;
+    }
+    .bookmark-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 8px 8px;
+      min-height: var(--row-h);
+    }
+    .bookmark-row {
+      flex: 1 1 auto;
+      display: grid;
+      grid-template-rows: auto auto;
+      gap: 2px;
+      cursor: pointer;
+      padding: 2px 4px;
+      border-radius: 6px;
+    }
+    .bookmark-row:hover {
+      background: var(--hover);
+    }
+    .snippet {
+      font-size: 12px;
+      color: var(--text);
+    }
+    .meta {
+      font-size: 10px;
+      color: var(--muted);
+    }
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .icon-btn {
+      appearance: none;
+      border: 1px solid var(--border);
+      background: var(--btn-bg);
+      color: var(--text);
+      border-radius: 6px;
+      padding: 6px 8px;
+      cursor: pointer;
+      transition: transform 0.06s ease, background 0.2s ease, border-color 0.2s ease;
+    }
+    .icon-btn:hover { background: var(--btn-bg-hover); border-color: var(--btn-border-hover); }
+    .icon-btn:active { transform: translateY(1px); }
+    .icon-btn.open { color: var(--accent); }
+    .icon-btn.copy { color: var(--accent-2); }
+    .icon-btn.delete { color: var(--danger); }
+    .empty {
+      color: var(--muted);
+      font-style: italic;
+      background: var(--panel);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 12px;
+      text-align: center;
+    }
+    .hint {
+      display: block;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 6px;
+      text-align: center;
+    }
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 10px;
+      transform: translateX(-50%);
+      background: var(--toast-bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 12px;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Saved messages</h1>
+    <div class="header-actions">
+      <button id="themeToggle" class="theme-btn" title="Toggle theme">🌗</button>
+    </div>
+  </header>
+  <div class="container">
+    <ul id="bookmarks"></ul>
+    <span class="hint">Click a row to copy link • Use ↗ to open</span>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="popup.js"></script>
+</body>
+</html>

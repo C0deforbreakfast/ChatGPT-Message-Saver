@@ -5,6 +5,8 @@ ChatGPT Message Saver
 
 Save, organize, and jump back to specific user prompts in ChatGPT conversations. Adds a small save icon next to each of your messages; the popup shows a professional list with copy / open / delete actions, deep-link highlighting, and theme toggle.
 
+Available in firefox addons: https://addons.mozilla.org/en-US/firefox/addon/chatgpt-message-saver/
+
 ## Features
 
 Current implemented capabilities:

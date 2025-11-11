@@ -190,18 +190,99 @@
       opacity: 1;
       transform: translateX(-50%) translateY(-2px);
     }
+
+    /* --- Left-aligned flat icon bar --- */
+    .tabs-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 10px;
+      background: var(--panel);
+      /* border-bottom: 1px solid var(--border); */
+      justify-content: flex-start;
+    }
+
+    /* Individual tab icons */
+    .tab-icon {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 13px;
+      cursor: pointer;
+      border-radius: 999px;
+      padding: 6px 8px;
+      transition: all 0.25s ease;
+      overflow: hidden;
+      box-shadow: none;
+    }
+
+    .tab-icon .label {
+      max-width: 0;
+      opacity: 0;
+      white-space: nowrap;
+      transition: max-width 0.25s ease, opacity 0.25s ease;
+    }
+
+    .tab-icon.active .label {
+      max-width: 100px;
+      opacity: 1;
+    }
+
+    .tab-icon.active .icon-img {
+      filter: invert(1) brightness(1.2); /* inverted + slightly brighter */
+    }
+
+    /* Optional hover glow */
+    .tab-icon:hover {
+      background: var(--btn-bg-hover);
+    }
+
+    /* Default (dark mode) */
+    .icon-img {
+      width: 18px;
+      height: 18px;
+      object-fit: contain;
+      transition: filter 0.25s ease;
+      filter: brightness(1); /* normal icon */
+    }
+
+    /* Dark mode: active tab inverts icon */
+    [data-theme="dark"] .tab-icon.active .icon-img {
+      filter: invert(1) brightness(1.2);
+    }
+
+    /* Light mode: active tab also inverts, but differently */
+    [data-theme="light"] .tab-icon.active .icon-img {
+      filter: invert(0) brightness(1.5); /* brightens without inverting */
+    }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Saved messages</h1>
-    <div class="header-actions">
-      <button id="themeToggle" class="theme-btn" title="Toggle theme">🌗</button>
-    </div>
-  </header>
+<header>
+  <div id="tabs" class="tabs-left">
+    <button id="tabBookmarks" class="tab-icon active" title="Bookmarks">
+      <img src="icons/bookmark16.png" class="icon-img" alt="Bookmarks Icon" width="20" height="20" />
+      <span class="label">Bookmarks</span>
+    </button>
+    <button id="tabFolders" class="tab-icon" title="Folders">
+      <img src="icons/folder16.png" class="icon-img" alt="Folders Icon" width="20" height="20" />
+      <span class="label">Folders</span>
+    </button>
+  </div>
+  <div class="header-actions">
+    <button id="themeToggle" class="theme-btn" title="Toggle theme">🌗</button>
+  </div>
+</header>
   <div class="container">
     <ul id="bookmarks"></ul>
     <span class="hint">Click a row to copy link • Use ↗ to open</span>
+  </div>
+  <div id="foldersView" hidden>
+    <ul id="folders"></ul>
+    <button id="addFolderBtn" class="theme-btn" style="margin-top: 8px; width: 100%;">+ New Folder</button>
   </div>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <script src="popup.js"></script>

@@ -233,3 +233,32 @@ loadBookmarks().catch(console.error);
 document.getElementById('themeToggle')?.addEventListener('click', () => {
   toggleTheme().catch(console.error);
 });
+
+// Handle tab switching
+document.getElementById("tabBookmarks").addEventListener("click", () => switchTab("bookmarks"));
+document.getElementById("tabFolders").addEventListener("click", () => switchTab("folders"));
+
+function switchTab(tab) {
+  const bookmarksView = document.getElementById("bookmarks");
+  const foldersView = document.getElementById("foldersView");
+  const tabBookmarks = document.getElementById("tabBookmarks");
+  const tabFolders = document.getElementById("tabFolders");
+
+  if (tab === "bookmarks") {
+    tabBookmarks.classList.add("active");
+    tabFolders.classList.remove("active");
+    bookmarksView.hidden = false;
+    foldersView.hidden = true;
+  } else {
+    tabFolders.classList.add("active");
+    tabBookmarks.classList.remove("active");
+    bookmarksView.hidden = true;
+    foldersView.hidden = false;
+  }
+}
+
+// Folder 
+addFolder(name)
+deleteFolder(name)
+assignBookmarkToFolder(BookmarkId, folderName)
+getBookmarksByFolder(folderName)
